@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Verification Pop-up</title>
+  <style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs2_28RpzU4eAKFgOqNmbiTI8NS40wG-m4NQ&s") no-repeat center center fixed;
+    background-size: cover;
+    backdrop-filter: blur(3px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .popup-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px rgba(0,0,0,0.2);
+    width: 1000px;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .popup-container:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  }
+
+  h2 {
+    margin-bottom: 55px;
+    color: #2e2e2e;
+    font-size: 1.6em;
+    letter-spacing: 0.5px;
+  }
+
+  .client-info {
+    background: rgba(247, 249, 252, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    border: 1px solid #e0e0e0;
+  }
+
+  label {
+    font-size: 1.05em;
+    color: #333;
+    cursor: pointer;
+  }
+
+  input[type="radio"] {
+    transform: scale(1.3);
+    margin-right: 50px;
+    accent-color: #4CAF50;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: space-between; /* pushes buttons to opposite sides */
+    align-items: center;
+    margin-top: 25px;
+  }
+
+  button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  .confirm {
+    background: #4CAF50;
+  }
+  .confirm:hover {
+    background: #45a049;
+    transform: scale(1.05);
+  }
+
+  .cancel {
+    background: #f44336;
+  }
+  .cancel:hover {
+    background: #d7382f;
+    transform: scale(1.05);
+  }
+
+  .back {
+    background: #777;
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .back:hover {
+    background: #666;
+  }
+
+  @media (max-width: 420px) {
+    .popup-container {
+      width: 85%;
+      padding: 30px;
+    }
+
+    .buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="popup-container">
+    <h2>Select Client</h2>
+
+    <div class="client-info">
+    
+      <div>
+        <input type="radio" id="clientBarbara" name="client" value="barbaraCustomer">
+        <label for="clientBarbara">Rica Smith</label>
+      </div>
+      
+      <div>
+        <input type="radio" id="clientOther" name="client" value="other">
+        <label for="clientOther">Other</label>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button id="cancelBtn" class="cancel">Cancel Confirmation</button>
+      <button id="confirmBtn" class="confirm">Confirm</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('confirmBtn').addEventListener('click', () => {
+      const selectedClient = document.querySelector('input[name="client"]:checked');
+      if (!selectedClient) {
+        alert('Please select a client first.');
+        return;
+      }
+
+      switch(selectedClient.value) {
+        case 'johnDoe':
+          window.location.href = 'verify-johnDoe.html';
+          break;
+        case 'barbaraCustomer':
+          window.location.href = 'verify-barbara.html';
+          break;
+        case 'johnCustomer':
+          window.location.href = 'verify-johnsnide.html';
+          break;
+        case 'other':
+          window.location.href = 'search.html';
+          break;
+      }
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      window.location.href = 'search.html';
+    });
+  </script>
+</body>
+</html>

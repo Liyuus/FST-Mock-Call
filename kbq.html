@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KBQ Verification</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs2_28RpzU4eAKFgOqNmbiTI8NS40wG-m4NQ&s") no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: blur(3px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .kbq-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+      width: 75%;
+      max-width: 1200px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e2e2e;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      font-size: 1em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #999;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    .question {
+      margin-top: 10px;
+      font-size: 1.05em;
+      color: #333;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 15px;
+    }
+
+    .confirm-btn {
+      align-self: flex-end;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-bottom: 10px;
+    }
+
+    .confirm-btn:hover {
+      background: #45a049;
+      transform: scale(1.05);
+    }
+
+    .cancel-btn {
+      align-self: flex-end;
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 10px;
+    }
+
+    .cancel-btn:hover {
+      background: #d32f2f;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="kbq-container">
+    <h2>Knowledge-Based Questions</h2>
+
+    <label for="optionSelect">Select Option:</label>
+    <select id="optionSelect" onchange="loadTransactions()">
+      <option value="">-- Choose an option --</option>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select>
+
+    <div id="transactionContainer"></div>
+
+    <button class="cancel-btn" onclick="window.location.href='search.html'">Cancel Interaction</button>
+  </div>
+
+  <script>
+    let table1Confirmed = false;
+
+    const table1Data = {
+      1: [
+        { merchant: "Amazon", amount: "$23.45", date: "2024-11-02" },
+        { merchant: "Target", amount: "$56.78", date: "2024-11-05" },
+        { merchant: "Walmart", amount: "$12.99", date: "2024-11-10" },
+        { merchant: "eBay", amount: "$45.10", date: "2024-11-12" },
+        { merchant: "Starbucks", amount: "$7.50", date: "2024-11-14" }
+      ],
+      2: [
+        { merchant: "Nike", amount: "$89.99", date: "2024-10-22" },
+        { merchant: "Apple Store", amount: "$499.00", date: "2024-10-23" },
+        { merchant: "Uber", amount: "$15.60", date: "2024-10-25" },
+        { merchant: "Netflix", amount: "$13.99", date: "2024-10-28" },
+        { merchant: "Spotify", amount: "$9.99", date: "2024-10-30" }
+      ],
+      3: [
+        { merchant: "Shopee", amount: "₱2,345.00", date: "2024-09-10" },
+        { merchant: "Lazada", amount: "₱1,199.00", date: "2024-09-12" },
+        { merchant: "Grab", amount: "₱250.00", date: "2024-09-14" },
+        { merchant: "Foodpanda", amount: "₱450.00", date: "2024-09-15" },
+        { merchant: "SM Department Store", amount: "₱3,999.00", date: "2024-09-18" }
+      ]
+    };
+
+    const table2Data = {
+      1: [{ date: "2024-11-20", amount: "$9.99" }],
+      2: [{ date: "2024-10-31", amount: "$14.99" }],
+      3: [{ date: "2024-09-22", amount: "₱2,099.00" }]
+    };
+
+    function loadTransactions() {
+      const option = document.getElementById("optionSelect").value;
+      const container = document.getElementById("transactionContainer");
+      container.innerHTML = "";
+
+      if (!option) return;
+
+      if (!table1Confirmed) {
+        const table = createTable1(table1Data[option]);
+        container.appendChild(table);
+        addQuestion(container, option, false);
+      } else {
+        const table = createTable2(table2Data[option]);
+        container.appendChild(table);
+        addQuestion(container, option, true);
+      }
+    }
+
+    function createTable1(data) {
+      const table = document.createElement("table");
+      const header = document.createElement("tr");
+      header.innerHTML = "<th>Merchant Name</th><th>Dollar Amount</th><th>Date</th>";
+      table.appendChild(header);
+
+      data.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${item.merchant}</td><td>${item.amount}</td><td>${item.date}</td>`;
+        table.appendChild(row);
+      });
+      return table;
+    }
+
+    function createTable2(data) {
+      const table = document.createElement("table");
+      const header = document.createElement("tr");
+      header.innerHTML = "<th>Date</th><th>Dollar Amount</th>";
+      table.appendChild(header);
+
+      data.forEach(item => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${item.date}</td><td>${item.amount}</td>`;
+        table.appendChild(row);
+      });
+      return table;
+    }
+
+    function addQuestion(container, option, isFollowUp) {
+      const question = document.createElement("div");
+      question.className = "question";
+      question.innerHTML = `
+        <p>Did the customer answer the question correctly?</p>
+        <div class="radio-group">
+          <label><input type="radio" name="answer" value="yes"> Yes</label>
+          <label><input type="radio" name="answer" value="no"> No</label>
+        </div>
+        <button class="confirm-btn" onclick="confirmAnswer(${option}, ${isFollowUp})">Confirm</button>
+      `;
+      container.appendChild(question);
+    }
+
+    function confirmAnswer(option, isFollowUp) {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      const container = document.getElementById("transactionContainer");
+
+      if (!selected) {
+        alert("Please select Yes or No before confirming.");
+        return;
+      }
+
+      if (!isFollowUp) {
+        table1Confirmed = true;
+        container.innerHTML = "";
+        const table = createTable2(table2Data[option]);
+        container.appendChild(table);
+        addQuestion(container, option, true);
+      } else {
+        if (selected.value === "yes") {
+          alert("Customer is successfully verified!");
+        } else {
+          alert("The customer needs to be verified in another means.");
+        }
+      }
+    }
+  </script>
+</body>
+</html>

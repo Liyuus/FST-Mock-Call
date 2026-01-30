@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Verification</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs2_28RpzU4eAKFgOqNmbiTI8NS40wG-m4NQ&s") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .client-box {
+      background: rgba(255, 255, 255, 0.9);
+      width: 70%;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-top: 40px;
+      text-align: left;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .client-box h2 {
+      font-size: 1.8em;
+      color: #2c3e50;
+      margin: 0;
+    }
+
+    .verify-container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      width: 70%;
+      text-align: left;
+      margin-top: 25px;
+    }
+
+    .methods {
+      background: rgba(247, 249, 252, 0.9);
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 25px 30px;
+      width: 95%;
+      margin: 0 auto 25px auto;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    .methods label {
+      display: flex;
+      align-items: center;
+      font-size: 18px;
+      color: #333;
+      margin: 12px 0;
+      cursor: pointer;
+    }
+
+    .methods input[type="radio"] {
+      transform: scale(1.3);
+      margin-right: 12px;
+      accent-color: #4CAF50;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+    }
+
+    .main-btn { background: #4CAF50; }
+    .secondary-btn { background: #f39c12; }
+
+    .back {
+      background: #777;
+      float: right;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    .back:hover {
+      background: #5a5a5a;
+      transform: scale(1.08);
+      box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+    }
+
+    input[type="text"] {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 80%;
+      margin-top: 10px;
+    }
+
+    .hidden { display: none !important; }
+
+    /* POPUPS */
+    .popup-container {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      backdrop-filter: blur(3px);
+    }
+
+    .popup-box {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      width: 320px;
+      max-width: 90%;
+      text-align: center;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+      animation: fadeInPopup 0.3s ease;
+    }
+
+    @keyframes fadeInPopup {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    select {
+      padding: 8px;
+      width: 90%;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .confirm-popup {
+      background: #4CAF50;
+      margin-top: 15px;
+    }
+
+    .cancel-popup {
+      background: #f44336;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="client-box">
+    <h2>Rica Smith</h2>
+  </div>
+
+  <div class="verify-container">
+    <h3>Select Verification Method</h3>
+
+    <div class="methods">
+      <label><input type="radio" name="method" value="otp"> OTP</label>
+      <label><input type="radio" name="method" value="other"> Other Method</label>
+      <label><input type="radio" name="method" value="transfer"> Transfer from Partner</label>
+    </div>
+
+    <div id="otpSection" class="hidden">
+      <h4>Registered Number:</h4>
+      <label><input type="radio" name="phone" class="otpPhone"> XXX-XXX-6788</label><br>
+
+      <h4>Code Preference:</h4>
+      <label><input type="radio" name="preference" class="preference"> Text</label>
+      <label><input type="radio" name="preference" class="preference"> Call</label><br>
+
+      <button id="sendOtpBtn" class="main-btn hidden">Send OTP</button>
+
+      <div id="otpInput" class="hidden">
+        <input type="text" id="otpCode" placeholder="Enter OTP" maxlength="6"><br>
+        <button id="verifyOtpBtn" class="main-btn">Verify</button>
+        <button id="cannotCompleteBtn" class="secondary-btn">Cannot complete OTP</button>
+      </div>
+      <p id="otpMessage"></p>
+    </div>
+
+    <button onclick="window.location.href='search.html'" class="back">Cancel Interaction</button>
+  </div>
+
+  <!-- INCOMPLETE OTP POPUP -->
+  <div id="popup" class="popup-container hidden">
+    <div class="popup-box">
+      <h3>Reason for Incomplete OTP</h3>
+      <select id="reasonSelect">
+        <option value="" disabled selected>Select a reason</option>
+        <option value="unavailable">Phone unavailable</option>
+        <option value="notworking">Phone not working</option>
+        <option value="others">Others</option>
+      </select>
+      <button id="confirmPopup" class="confirm-popup">Confirm</button>
+      <button id="cancelPopup" class="cancel-popup">Cancel</button>
+    </div>
+  </div>
+
+  <!-- SUCCESS POPUP -->
+  <div id="successPopup" class="popup-container hidden">
+    <div class="popup-box">
+      <h3>✅ Verification Successful</h3>
+      <p>The customer is successfully verified!</p>
+      <button id="successConfirmBtn" class="confirm-popup">Confirm</button>
+    </div>
+  </div>
+
+  <script>
+    const otpSection = document.getElementById('otpSection');
+    const otpPhones = document.querySelectorAll('.otpPhone');
+    const sendOtpBtn = document.getElementById('sendOtpBtn');
+    const otpInput = document.getElementById('otpInput');
+    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+    const cannotCompleteBtn = document.getElementById('cannotCompleteBtn');
+    const otpMessage = document.getElementById('otpMessage');
+    const otpCodeInput = document.getElementById('otpCode');
+
+    const popup = document.getElementById('popup');
+    const confirmPopup = document.getElementById('confirmPopup');
+    const cancelPopup = document.getElementById('cancelPopup');
+    const reasonSelect = document.getElementById('reasonSelect');
+
+    const successPopup = document.getElementById('successPopup');
+    const successConfirmBtn = document.getElementById('successConfirmBtn');
+
+    document.querySelectorAll('input[name="method"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        otpSection.classList.toggle('hidden', radio.value !== 'otp');
+      });
+    });
+
+    otpPhones.forEach(phone => {
+      phone.addEventListener('change', () => {
+        otpInput.classList.add('hidden');
+        otpCodeInput.value = '';
+        otpMessage.textContent = '';
+        sendOtpBtn.classList.add('hidden');
+        document.querySelectorAll('.preference').forEach(p => p.checked = false);
+      });
+    });
+
+    document.querySelectorAll('.preference').forEach(pref => {
+      pref.addEventListener('change', () => {
+        sendOtpBtn.classList.remove('hidden');
+      });
+    });
+
+    sendOtpBtn.onclick = () => otpInput.classList.remove('hidden');
+
+    verifyOtpBtn.onclick = () => {
+      const validCodes = ['123456','654321','111111','222222','333333'];
+      if (validCodes.includes(otpCodeInput.value.trim())) {
+        successPopup.classList.remove('hidden');
+      } else {
+        otpMessage.textContent = '❌ Incorrect OTP.';
+        otpMessage.style.color = 'red';
+      }
+    };
+
+    cannotCompleteBtn.onclick = () => popup.classList.remove('hidden');
+    cancelPopup.onclick = () => popup.classList.add('hidden');
+
+    confirmPopup.onclick = () => {
+      if (reasonSelect.value) window.location.href = 'kbq.html';
+    };
+
+    successConfirmBtn.onclick = () => {
+      window.location.href = 'Rica.html';
+    };
+  </script>
+
+</body>
+</html>

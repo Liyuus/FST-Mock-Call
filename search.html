@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Search Client</title>
+  <style>
+    :root{
+      --field-width: 420px;
+      --gap: 10px;
+      --field-height: 40px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs2_28RpzU4eAKFgOqNmbiTI8NS40wG-m4NQ&s") no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: blur(3px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .search-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 50px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      width: 70%;
+      max-width: 900px;
+      text-align: left;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .search-container:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+
+    h2 { color:#2e2e2e; margin-bottom: 8px; }
+    p { color:#555; margin-bottom: 18px; }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .ssn-cc-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: var(--field-width);
+    }
+
+    input {
+      width: 100%;
+      height: var(--field-height);
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    button {
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform .12s ease, background .12s ease;
+      border: none;
+    }
+
+    #searchBtn { background: #2196F3; color: white; }
+    #searchBtn:hover { transform: scale(1.04); background: #1976D2; }
+
+    #clearBtn { background: #f44336; color: white; }
+    #clearBtn:hover { transform: scale(1.04); background: #d32f2f; }
+
+    #searchResult {
+      margin-top: 24px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: #f1f1f1;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    #searchResult p { margin: 0; color:#222; font-weight:600; }
+    #searchResult button {
+      background: #4CAF50;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+    #searchResult button:hover { transform: scale(1.04); background:#43A047; }
+
+    .back {
+      background: #777;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      margin-top: 22px;
+      float: right;
+      transition: transform .14s ease, box-shadow .14s ease;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    }
+    .back:hover { transform: scale(1.05); box-shadow: 0 6px 14px rgba(0,0,0,0.16); }
+
+    @media (max-width: 720px){
+      :root { --field-width: 100%; }
+      .search-container { width: 92%; padding: 28px; }
+      #searchResult { width: 100%; flex-direction: column; align-items: flex-start; gap:10px; }
+      .back { float:none; width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="search-container">
+    <h2>Search for Client</h2>
+    <p>Enter SSN or Credit Card Number</p>
+
+    <div class="input-group">
+      <div class="ssn-cc-container">
+        <input type="text" id="ssn" placeholder="SSN (123-45-6789)" maxlength="11">
+        <input type="text" id="ccn" placeholder="Credit Card Number" inputmode="numeric" pattern="[0-9]*">
+      </div>
+
+      <div class="btn-group">
+        <button id="searchBtn" type="button">Search</button>
+        <button id="clearBtn" type="button">Clear</button>
+      </div>
+    </div>
+
+    <div id="searchResult"></div>
+    <button onclick="window.location.href='index.html'" class="back" type="button">⬅ Go Back</button>
+  </div>
+
+  <script>
+    const ssn = document.getElementById('ssn');
+    const ccn = document.getElementById('ccn');
+    const searchBtn = document.getElementById('searchBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const resultDiv = document.getElementById('searchResult');
+
+    // Input formatting
+    ssn.addEventListener('input', () => {
+      ssn.value = ssn.value.replace(/[^\d-]/g,'').slice(0,11);
+    });
+    ccn.addEventListener('input', () => {
+      ccn.value = ccn.value.replace(/\D/g,'');
+    });
+
+    const clients = [
+      {name:'John Doe', ssn:'123456789', cc:'1234123412341234', verifyPage:'verify-johnDoe.html'},
+      {name:'Rica Smith', ssn:'123456798', cc:'4489153011582222', verifyPage:'verify-barbara.html'},
+      {name:'John Snide', ssn:'123456888', cc:'1111222233334444', verifyPage:'verify-johnsnide.html'}
+    ];
+
+    searchBtn.addEventListener('click', () => {
+      const ssnVal = ssn.value.replace(/-/g,'').trim();
+      const ccnVal = ccn.value.trim();
+      const found = clients.find(c => c.ssn === ssnVal || c.cc === ccnVal);
+
+      if(found){
+        resultDiv.innerHTML = `
+          <p>${found.name}</p>
+          <button onclick="window.location.href='${found.verifyPage}'">New Interaction</button>
+        `;
+      } else {
+        resultDiv.innerHTML = `<p style="color:red;">No client found</p>`;
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      ssn.value = '';
+      ccn.value = '';
+      resultDiv.innerHTML = '';
+    });
+  </script>
+</body>
+</html>
